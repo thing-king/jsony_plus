@@ -1,6 +1,6 @@
 # Package
 
-version       = "0.1.0"
+version       = "0.1.1"
 author        = "savannt"
 description   = "An extension of `jsony` supporting better hooks, and type creation from schemas"
 license       = "MIT"
