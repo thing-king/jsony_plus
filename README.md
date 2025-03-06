@@ -8,8 +8,8 @@ An extension of [jsony](https://github.com/treeform/jsony) providing quality of 
 JSON property names can be renamed to *not* directly match to type property names. *This works both ways to/from*
 ```nim
 type AnObject = object
-  Name {.json: "name"  }: string
-  Value  {.json: "some_value"}: string
+  Name  {.json: "name"      }: string
+  Value {.json: "some_value"}: string
 
 # required to generate `dumpHook()` and `parseHook()`s
 allowSerialization AnObject
@@ -521,8 +521,8 @@ Simply ensure a file referenced is loaded using `fromSchema`
 
 `parse[T](str: string)` / `to[T](str: string)` / `to[T](str: string, T: typedesc)`
 ```nim
-let anObject = parse[AnObject]("""{ "name": "hello", "some_value": "world!" }""")
-let anObject2 = to[AnObject]("""{ "name": "hello", "some_value": "world!" }""")
+let anObject  = parse[AnObject]("""{ "name": "hello", "some_value": "world!" }""")
+let anObject2 =    to[AnObject]("""{ "name": "hello", "some_value": "world!" }""")
 let anObject3 = """{ "name": "hello", "some_value": "world!" }""".to(AnObject)
 ```
 
@@ -537,7 +537,7 @@ Parses str as T, and checks if empty.
 *jsony is "loose", anything not AnObject will parse- but be empty*
 If two objects share a field name, this will not work- making this very silly
 ```nim
-type NotAnObject =
+type NotAnObject = object
   something: int
 
 echo """{"name": "hello"}""".isOf(NotAnObject) # false
