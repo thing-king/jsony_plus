@@ -551,6 +551,7 @@ Parses, then checks if not empty
 Pretties an inline JSON string, akin to json.pretty
 
 #### TODO
+* Make `"Variants"` standalone with pragma support, etc.
 * Expand `fromSchema` to support the entire spec
 * Expand `fromSchema` to allow an optional body, DSL guides type naming
 * Extend hooks to be easier to use
