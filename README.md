@@ -8,8 +8,8 @@ An extension of [jsony](https://github.com/treeform/jsony) providing quality of 
 JSON property names can be renamed to *not* directly match to type property names. *This works both ways to/from*
 ```nim
 type AnObject = object
-  Name {.json: "name"  }: string
-  Value  {.json: "some_value"}: string
+  Name  {.json: "name"      }: string
+  Value {.json: "some_value"}: string
 
 # required to generate `dumpHook()` and `parseHook()`s
 allowSerialization AnObject
