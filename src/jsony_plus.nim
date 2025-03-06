@@ -154,7 +154,7 @@ proc to*(jsonStr: string, T: typedesc): T =
 
 # Creates a blank object of type T and compares it to given X to determine if X is empty (default object)
 proc isEmpty*[T](x: T): bool =
-  template isFieldEmpty*[T](x: T): bool =
+  template isFieldEmpty[T](x: T): bool =
     type defaultObj = object
       value: T
     defaultObj().value == x
