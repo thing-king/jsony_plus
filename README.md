@@ -601,6 +601,22 @@ Person:
     city: ...
 ```
 
+### NimNode Serialization
+Serialization of NimNodes is supported by converting them to a `SerializedNode`. Unlike a raw `NimNode`, this object can be used for serialization.
+```nim
+import jsony_plus/serialized_node
+
+let node = nnkCommand.newTree(
+  ident("some"),
+  nnkBracket.newTree(
+    ident("stuff"),
+    ident("here")
+  )
+)
+let serializedNode = node.toSerializedNode()    # to a serializable object
+let backToNimNode  = serializedNode.toNimNode() # back to a NimNode
+```
+
 #### TODO
 * Make `"Variants"` standalone with pragma support, etc.
 * Expand `fromSchema` to support the entire spec
