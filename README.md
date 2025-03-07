@@ -23,6 +23,8 @@ Types can be auto-generated given a JSON Schema.
 
 ###### Usage:
 ```nim
+import jsony_plus/schema
+
 # fromSchema <path> <baseName>
 fromSchema "web/css/schemas/atRules.schema.json", "AtRule"
 ```
@@ -549,6 +551,55 @@ Parses, then checks if not empty
 
 `pretty(str: string)`
 Pretties an inline JSON string, akin to json.pretty
+
+### Displayable Pretty Object
+A quality-of-life macro to easily read an object, with optional cases for collapsing or deleting properties.
+```nim
+import jsony_plus/displayable
+
+# Example usage:
+type
+  Hobby = object
+    name: string
+    hoursPerWeek: int
+
+  Person = object
+    name: string
+    age: int
+    hobbies: seq[Hobby]
+    address: Address
+
+  Address = object
+    street: string
+    city: string
+
+# Creates a `pretty()` proc for `T`
+displayable Person:
+  collapse "address.city"
+  delete "hobbies.hoursPerWeek"
+
+let person = Person(
+  name: "John Doe",
+  age: 30,
+  hobbies: @[Hobby(name: "Cycling", hoursPerWeek: 5), Hobby(name: "Reading", hoursPerWeek: 10)],
+  address: Address(
+    street: "123 Main St",
+    city: "Springfield"
+  )
+)
+echo person.pretty()
+```
+```
+Person:
+  name: "John Doe"
+  age: 30
+  hobbies: 
+    - name: "Cycling"
+    - name: "Reading"
+  address: 
+    street: "123 Main St"
+    city: ...
+```
 
 #### TODO
 * Make `"Variants"` standalone with pragma support, etc.
