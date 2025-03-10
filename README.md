@@ -518,6 +518,13 @@ This serialization works both ways, *to and from* by generating associated `dump
 #### Multi-file Reference Supported
 Simply ensure a file referenced is loaded using `fromSchema`
 
+#### Schema Caching
+Large schemas can make `checking` slow. This really sucks!
+
+You can use the rudimentary `schema_cacher` to have generated types saved to a file and imported instead of a new generation per `check`. The same works for loading some static variable instances of the types.
+```nim
+
+```
 
 ### Small QOL Procedures
 
