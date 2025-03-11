@@ -212,7 +212,7 @@ macro displayable*(rawArgs: varargs[untyped]): untyped =
 
 
 macro format*(T: untyped, inst: untyped, body: untyped): untyped =
-  expectKind(T, {nnkIdent, nnkSym})
+  expectKind(T, {nnkIdent, nnkSym, nnkBracketExpr})
   expectKind(inst, nnkIdent)
   expectKind(body, nnkStmtList)
 
