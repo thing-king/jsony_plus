@@ -51,6 +51,53 @@ proc formatJsonNode(node: JsonNode, indent = 2, isArrayItem = false): string =
     # Null in red
     result.add "none".red.italic
 
+proc formatJsonNodeInline(node: JsonNode): string =
+  case node.kind
+  of JObject:
+    result = "{"
+    var first = true
+    for key, value in node.pairs:
+      if not first: result.add ", "
+      first = false
+      # Key in cyan, colon in gray
+      result.add key.cyan & ": ".black
+      # Value with appropriate color
+      result.add formatJsonNodeInline(value)
+    result.add "}"
+  
+  of JArray:
+    if node.elems.len == 0:
+      result &= "[]".red.italic
+    else:
+      result = "["
+      for i, item in node.elems:
+        if i > 0: result.add ", "
+        result.add formatJsonNodeInline(item)
+      result.add "]"
+
+  of JString:
+    # Strings in green
+    if node.str == "...":
+      result.add "...".yellow.italic
+    else:
+      result.add ("\"" & node.str & "\"").green
+  
+  of JInt:
+    # Numbers in yellow
+    result.add ($node.num).yellow
+  
+  of JFloat:
+    # Floats in yellow
+    result.add ($node.fnum).yellow
+  
+  of JBool:
+    # Booleans in magenta
+    result.add ($node.bval).magenta
+  
+  of JNull:
+    # Null in red
+    result.add "none".red.italic
+
 
 proc shouldProcess(path: string, paths: openArray[string]): bool =
   for p in paths:
@@ -149,7 +196,19 @@ macro displayable*(rawArgs: varargs[untyped]): untyped =
       processJsonPaths(jsonNode, "", deletePaths, collapsePaths)
       
       result = `prettyName`.cyan & ":\n  " & formatJsonNode(jsonNode).strip()
-
+    
+    proc inline*(`argName`: `T`): string =
+      let jsonStr = `argName`.toJson()
+      var jsonNode = parseJson(jsonStr)
+      
+      # Convert the compile-time arrays to runtime arrays
+      let deletePaths = `deletePathsNode`
+      let collapsePaths = `collapsePathsNode`
+      
+      # Process the paths
+      processJsonPaths(jsonNode, "", deletePaths, collapsePaths)
+      
+      result = `prettyName`.cyan & ": " & formatJsonNodeInline(jsonNode)
 
 
 when isMainModule:
@@ -184,3 +243,5 @@ when isMainModule:
   )
   
   echo person.pretty()
+  echo "\nInline output:"
+  echo person.inline()
