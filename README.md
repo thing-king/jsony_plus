@@ -561,6 +561,9 @@ Pretties an inline JSON string, akin to json.pretty
 
 ### Displayable Pretty Object
 A quality-of-life macro to easily read an object, with optional cases for collapsing or deleting properties.
+This works by converting the object `toJson()`, then applying post-process:
+* collapse
+* delete
 ```nim
 import jsony_plus/displayable
 
@@ -580,7 +583,11 @@ type
     street: string
     city: string
 
-# Creates a `pretty()` proc for `T`
+# This creates a `dumpHook()`
+format Address, ad:
+  "\"" & ad.street & ", " & ad.city & "\""
+
+# Creates a `pretty()` and `inline()` proc for `T`
 displayable Person:
   collapse "address.city"
   delete "hobbies.hoursPerWeek"
@@ -595,6 +602,7 @@ let person = Person(
   )
 )
 echo person.pretty()
+echo person.inline()
 ```
 ```
 Person:
@@ -603,9 +611,9 @@ Person:
   hobbies: 
     - name: "Cycling"
     - name: "Reading"
-  address: 
-    street: "123 Main St"
-    city: ...
+  address: "123 Main St, Springfield"
+
+Person: {name: "John Doe", age: 30, hobbies: [{name: "Cycling"}, {name: "Reading"}], address: "123 Main St, Springfield"}
 ```
 
 ### NimNode Serialization
@@ -630,3 +638,4 @@ let backToNimNode  = serializedNode.toNimNode() # back to a NimNode
 * Expand `fromSchema` to allow an optional body, DSL guides type naming
 * Extend hooks to be easier to use
 * Replace `isOf` entirely
+* Isolate displayable `dumpHooks`

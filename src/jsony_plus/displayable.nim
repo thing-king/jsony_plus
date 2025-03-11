@@ -211,6 +211,23 @@ macro displayable*(rawArgs: varargs[untyped]): untyped =
       result = `prettyName`.cyan & ": " & formatJsonNodeInline(jsonNode)
 
 
+macro format*(T: untyped, inst: untyped, body: untyped): untyped =
+  expectKind(T, nnkIdent)
+  expectKind(inst, nnkIdent)
+  expectKind(body, nnkStmtList)
+
+  let prcName = ident("prc")
+  let prc = quote do:
+    proc `prcName`(`inst`: `T`): string =
+      `body`
+
+  result = quote do:
+    proc dumpHook*(s: var string, inst: `T`) =
+      `prc`
+      s.add `prcName`(inst)
+
+
+
 when isMainModule:
   # Example usage:
   type
@@ -227,7 +244,10 @@ when isMainModule:
     Address = object
       street: string
       city: string
-    
+
+  format Address, ad:
+    "\"" & ad.street & ", " & ad.city & "\""
+
   displayable(Person):
     collapse "address.city"
     delete "hobbies.hoursPerWeek"
@@ -241,7 +261,7 @@ when isMainModule:
       city: "Springfield"
     )
   )
-  
+
   echo person.pretty()
   echo "\nInline output:"
   echo person.inline()
